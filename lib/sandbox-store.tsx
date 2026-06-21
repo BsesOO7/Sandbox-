@@ -60,6 +60,8 @@ interface SandboxContextValue {
   refreshAll: () => Promise<void>;
   clearLogs: () => void;
   lookup: (n: string, r: string) => Promise<Cooperative>;
+  showDevPanel: boolean;
+  setShowDevPanel: (show: boolean) => void;
 }
 
 const SandboxContext = createContext<SandboxContextValue | null>(null);
@@ -70,6 +72,7 @@ export function SandboxProvider({ children }: { children: ReactNode }) {
   const [exchanges, setExchanges] = useState<ApiExchange[]>([]);
   const [selectedCoopId, setInternalSelectedId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(true);
+  const [showDevPanel, setShowDevPanel] = useState(true); 
 
   const addLog = useCallback(
     (
@@ -286,6 +289,8 @@ export function SandboxProvider({ children }: { children: ReactNode }) {
       refreshBalance,
       refreshAll,
       lookup,
+      showDevPanel,
+      setShowDevPanel,
       clearLogs: () => {
         setLogs([]);
         setExchanges([]);
@@ -305,6 +310,7 @@ export function SandboxProvider({ children }: { children: ReactNode }) {
       refreshAll,
       lookup,
       setSelectedCoopId,
+      showDevPanel
     ],
   );
 

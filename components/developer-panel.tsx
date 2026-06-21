@@ -1,70 +1,88 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Code2, Eraser, Terminal } from "lucide-react";
+import { ChevronDown, Code2, Eraser, Terminal, ChevronRight, ChevronLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSandbox } from "@/lib/sandbox-store";
 import { BASE_URL } from "@/lib/api/client";
+import { cn } from "@/lib/utils";
 import type { ApiExchange, LogEntry } from "@/lib/types";
 
 export function DeveloperPanel() {
   const { logs, exchanges, clearLogs } = useSandbox();
   const [tab, setTab] = useState<"log" | "inspector">("log");
+  const [isCollapsed, setIsCollapsed] = useState(false); // Local toggle state
 
+  // --- COLLAPSED VIEW (Slim Rail) ---
+  if (isCollapsed) {
+    return (
+      <div 
+        className="flex h-full w-12 flex-col items-center border-l bg-card py-4 transition-all duration-300"
+        onClick={() => setIsCollapsed(false)}
+      >
+        <Button size="icon" variant="ghost" className="mb-8">
+          <ChevronLeft className="size-4" />
+        </Button>
+        <div className="flex flex-1 items-center justify-center [writing-mode:vertical-lr] rotate-180">
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground whitespace-nowrap">
+            Developer Logs
+          </span>
+        </div>
+        <Badge variant="secondary" className="mt-4 px-1 text-[10px]">
+          {logs.length}
+        </Badge>
+      </div>
+    );
+  }
+
+  // --- EXPANDED VIEW (Full Panel) ---
   return (
-    <Card className="flex h-full flex-col overflow-hidden border-primary/15 bg-card py-0">
+    <Card className="flex h-full w-[400px] flex-col overflow-hidden border-l border-primary/15 bg-card py-0 rounded-none transition-all duration-300">
       <CardHeader className="gap-0 border-b bg-muted/40 py-3">
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="flex items-center gap-2 text-sm">
-            <span className="flex size-2 items-center justify-center">
-              <span className="size-2 animate-pulse rounded-full bg-accent" />
-            </span>
+            <Button 
+              size="icon" 
+              variant="ghost" 
+              className="size-6 mr-1" 
+              onClick={() => setIsCollapsed(true)}
+            >
+              <ChevronRight className="size-4" />
+            </Button>
             Developer Mode
           </CardTitle>
           <Button
             size="xs"
             variant="ghost"
+            className="h-7 text-[10px]"
             onClick={clearLogs}
-            aria-label="Clear logs"
           >
-            <Eraser /> Clear
+            <Eraser className="size-3 mr-1" /> Clear
           </Button>
         </div>
+        
         <div className="mt-3 flex gap-1">
-          <TabButton
-            active={tab === "log"}
-            onClick={() => setTab("log")}
-            icon={<Terminal className="size-3.5" />}
-          >
-            Event Log
-            <Badge variant="secondary" className="ml-1 px-1 tabular-nums">
-              {logs.length}
-            </Badge>
+          <TabButton active={tab === "log"} onClick={() => setTab("log")} icon={<Terminal className="size-3.5" />}>
+            Events
+            <Badge variant="secondary" className="ml-1 px-1 text-[9px]">{logs.length}</Badge>
           </TabButton>
-          <TabButton
-            active={tab === "inspector"}
-            onClick={() => setTab("inspector")}
-            icon={<Code2 className="size-3.5" />}
-          >
-            Inspector
-            <Badge variant="secondary" className="ml-1 px-1 tabular-nums">
-              {exchanges.length}
-            </Badge>
+          <TabButton active={tab === "inspector"} onClick={() => setTab("inspector")} icon={<Code2 className="size-3.5" />}>
+            API
+            <Badge variant="secondary" className="ml-1 px-1 text-[9px]">{exchanges.length}</Badge>
           </TabButton>
         </div>
       </CardHeader>
+
       <CardContent className="min-h-0 flex-1 overflow-hidden p-0">
-        {tab === "log" ? (
-          <EventLog logs={logs} />
-        ) : (
-          <Inspector exchanges={exchanges} />
-        )}
+        {tab === "log" ? <EventLog logs={logs} /> : <Inspector exchanges={exchanges} />}
       </CardContent>
     </Card>
   );
 }
+
+// ... TabButton, EventLog, Inspector, etc. remain the same ...
 
 function TabButton({
   active,
