@@ -437,10 +437,10 @@ export default function PortalDashboard() {
                     NIFN Network Node
                   </span>
                 </div>
-                <div className="flex">
+                {/* <div className="flex">
                   <div className="size-7 rounded-full bg-[#eb001b] opacity-90" />
                   <div className="size-7 rounded-full bg-[#f79e1b] opacity-80 -ml-4" />
-                </div>
+                </div> */}
               </div>
               <div className="relative z-20">
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2">

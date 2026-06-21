@@ -48,11 +48,11 @@ export function PortalHeader() {
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter leading-none">
-                Logged in as
+                Logged in
               </p>
-              <p className="text-xs font-black text-slate-900 mt-0.5 italic">
+              {/* <p className="text-xs font-black text-slate-900 mt-0.5 italic">
                 Node #{coopId || "----"}
-              </p>
+              </p> */}
             </div>
             <div className="size-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200">
               <UserCircle className="size-6" />
